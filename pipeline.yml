@@ -1,0 +1,6 @@
+# Buildkite pipeline file
+steps:
+  - command: "echo hello world"
+    label: ":llama:"
+  - command: "cat *"
+    label: ":cat:"
