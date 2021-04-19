@@ -4,3 +4,5 @@ steps:
     label: ":llama:"
   - command: "cat *"
     label: ":cat:"
+  - command: "env"
+    label: ":cookie:"
