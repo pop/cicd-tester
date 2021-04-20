@@ -6,3 +6,6 @@ steps:
     label: ":cat:"
   - command: "env"
     label: ":cookie:"
+  - command: "echo 'Deploy preview created'"
+    plugins:
+      - ailohq/github-status#v1.0.0
