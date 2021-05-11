@@ -38,7 +38,7 @@ jobs:
     needs:
       - relevant_environments
     steps:
-      - run: echo "${{ needs.relevant_environments.outputs }}"
+      - run: echo "${{ needs.relevant_environments.outputs.* }}"
 
   # This workflow contains a single job called "build"
   build:
