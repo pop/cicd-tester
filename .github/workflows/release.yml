@@ -27,7 +27,10 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build the thing
-        run: echo "Building the thing"
+        run: |
+          echo "Building the thing"
+          sleep 2
+          echo "Done!"
 
   deploy_testing:
     name: "Deploy to Testing"
@@ -45,7 +48,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Deploy to testing
-        run: echo "Deploy the thing to Staging"
+        run: |
+          echo "Deploy the thing to Staging"
+          sleep 2
+          echo "Done!"
 
   deploy_staging:
     name: "Deploy to Staging"
@@ -62,7 +68,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Deploy to Staging
-        run: echo "Deploy the thing to Staging"
+        run: |
+          echo "Deploy the thing to Staging"
+          sleep 2
+          echo "Done!"
   
   deploy_production:
     name: "Deploy to Production"
@@ -79,4 +88,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Deploy to Production
-        run: echo "Deploying the thing to Production"
+        run: |
+          echo "Deploying the thing to Production"
+          sleep 2
+          echo "Done!"

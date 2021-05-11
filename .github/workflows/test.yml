@@ -30,6 +30,8 @@ jobs:
         run: |
           echo "Building the thing"
           echo $RANDOM > build.$RANDOM.data
+          sleep 1
+          echo "Done!"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v2
@@ -56,7 +58,10 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Test the thing
-        run: echo "Testing the thing"
+        run: |
+          echo "Testing the thing"
+          sleep 1
+          echo "Done!"
 
       - name: Download build data
         uses: actions/download-artifact@v2
