@@ -43,6 +43,15 @@ jobs:
             fi
           done
 
+  debug_relevant_environments:
+    name: "Debug relevant environments"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ needs.relevant_environment.outputs }}"
+      - run: echo "${{ needs.relevant_environment.outputs.sandbox }}"
+      - run: echo "${{ needs.relevant_environment.outputs.staging }}"
+      - run: echo "${{ needs.relevant_environment.outputs.production }}"
+
   # This workflow contains a single job called "build"
   build:
     name: "Build"
