@@ -19,9 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      production: ${{ steps.calc.outputs.production }}
-      staging: ${{ steps.calc.outputs.staging }}
-      sandbox: ${{ steps.calc.outputs.sandbox }}
+      changed: ${{ steps.calc.outputs.changed }}
 
     steps:
       - uses: actions/checkout@v2
@@ -32,17 +30,7 @@ jobs:
       - id: calc
         shell: bash
         run: |
-          for changed_file in ${{ steps.changed_files.outputs.added_modified }}; do
-            if [[ $changed_file == "production/"* ]]; then
-              echo '::set-output name=production::yes'
-            fi
-            if [[ $changed_file == "staging/"* ]]; then
-              echo '::set-output name=staging::yes'
-            fi
-            if [[ $changed_file == "sandbox/"* ]]; then
-              echo '::set-output name=sandbox::yes'
-            fi
-          done
+          echo "::set-output name=changed::`echo [$(echo ${{ steps.changed_files.outputs.added_modified }} | xargs -n1 -I{} echo {}, | cut -d '/' -f 1 | uniq)]`"
 
   debug_relevant_environments:
     name: "Debug relevant environments"
@@ -50,10 +38,7 @@ jobs:
     needs:
       - relevant_environments
     steps:
-      - run: echo "${{ needs.relevant_environment.outputs }}"
-      - run: echo "${{ needs.relevant_environment.outputs.sandbox }}"
-      - run: echo "${{ needs.relevant_environment.outputs.staging }}"
-      - run: echo "${{ needs.relevant_environment.outputs.production }}"
+      - run: echo "${{ needs.relevant_environments.outputs }}"
 
   # This workflow contains a single job called "build"
   build:
@@ -77,7 +62,7 @@ jobs:
   deploy_testing:
     name: "Deploy to Testing"
 
-    if: "${{ needs.relevant_environment.outputs.sandbox == 'yes' }}"
+    if: ${{ contains(needs.relevant_environments.outputs, "sandbox") }}
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -101,7 +86,7 @@ jobs:
   deploy_staging:
     name: "Deploy to Staging"
 
-    if: "${{ needs.relevant_environment.outputs.staging == 'yes' }}"
+    if: ${{ contains(needs.relevant_environments.outputs, "staging") }}
 
     runs-on: ubuntu-latest
     
@@ -124,7 +109,7 @@ jobs:
   deploy_production:
     name: "Deploy to Production"
 
-    if: "${{ needs.relevant_environment.outputs.production == 'yes' }}"
+    if: ${{ contains(needs.relevant_environments.outputs, "production") }}
 
     runs-on: ubuntu-latest
     

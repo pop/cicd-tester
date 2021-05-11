@@ -1,6 +1,2 @@
-for changed_file in $(echo ".github/workflows/release.yml production/baz sandbox/foo staging/bar"); do
-        echo $changed_file;
-	if [[ "$changed_file" == "production/"* ]]; then
-		echo "::set-output name=production::true"
-	fi
-done
+input=".github/workflows/release.yml production/baz sandbox/foo staging/bar"
+echo "::set-output name=changed::`echo [$(echo $input | xargs -n1 -I{} echo {}, | cut -d '/' -f 1 | uniq)]`"
