@@ -19,12 +19,9 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      production:
-        value: ${{ steps.calc.outputs.production }}
-      staging:
-        value: ${{ steps.calc.outputs.staging }}
-      sandbox:
-        value: ${{ steps.calc.outputs.sandbox }}
+      production: ${{ steps.calc.outputs.production }}
+      staging: ${{ steps.calc.outputs.staging }}
+      sandbox: ${{ steps.calc.outputs.sandbox }}
 
     steps:
       - uses: actions/checkout@v2
