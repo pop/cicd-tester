@@ -19,9 +19,12 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      production: ${{ steps.calc.outputs.production }}
-      staging: ${{ steps.calc.outputs.staging }}
-      sandbox: ${{ steps.calc.outputs.sandbox }}
+      production:
+        value: ${{ steps.calc.outputs.production }}
+      staging:
+        value: ${{ steps.calc.outputs.staging }}
+      sandbox:
+        value: ${{ steps.calc.outputs.sandbox }}
 
     steps:
       - uses: actions/checkout@v2
@@ -30,16 +33,17 @@ jobs:
         uses: jitterbit/get-changed-files@v1
 
       - id: calc
+        shell: bash
         run: |
           for changed_file in ${{ steps.changed_files.outputs.added_modified }}; do
             if [[ $changed_file == "production/"* ]]; then
-              echo "::set-output name=production::true"
+              echo '::set-output name=production::yes'
             fi
             if [[ $changed_file == "staging/"* ]]; then
-              echo "::set-output name=staging::true"
+              echo '::set-output name=staging::yes'
             fi
             if [[ $changed_file == "sandbox/"* ]]; then
-              echo "::set-output name=sandbox::true"
+              echo '::set-output name=sandbox::yes'
             fi
           done
 
@@ -76,7 +80,7 @@ jobs:
   deploy_testing:
     name: "Deploy to Testing"
 
-    if: "${{ needs.relevant_environment.outputs.sandbox == true }}"
+    if: "${{ needs.relevant_environment.outputs.sandbox == 'yes' }}"
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -100,7 +104,7 @@ jobs:
   deploy_staging:
     name: "Deploy to Staging"
 
-    if: "${{ needs.relevant_environment.outputs.staging == true }}"
+    if: "${{ needs.relevant_environment.outputs.staging == 'yes' }}"
 
     runs-on: ubuntu-latest
     
@@ -123,7 +127,7 @@ jobs:
   deploy_production:
     name: "Deploy to Production"
 
-    if: "${{ needs.relevant_environment.outputs.production == true}}"
+    if: "${{ needs.relevant_environment.outputs.production == 'yes' }}"
 
     runs-on: ubuntu-latest
     
