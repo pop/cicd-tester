@@ -33,13 +33,13 @@ jobs:
         run: |
           for changed_file in ${{ steps.changed_files.outputs.added_modified }}; do
             echo "Changed/added files: ${{ steps.changed_files.outputs.added_modified }}"
-            if [[ $changed_file == "production/*" ]]; then
+            if [[ $changed_file == "production/"* ]]; then
               echo "::set-output name=production::true"
             fi
-            if [[ $changed_file == "staging/*" ]]; then
+            if [[ $changed_file == "staging/"* ]]; then
               echo "::set-output name=staging::true"
             fi
-            if [[ $changed_file == "sandbox/*" ]]; then
+            if [[ $changed_file == "sandbox/"* ]]; then
               echo "::set-output name=sandbox::true"
             fi
           done
@@ -96,7 +96,7 @@ jobs:
     
     needs:
       - relevant_environments
-      - deploy_testing
+      - build
     
     environment:
       name: staging
@@ -119,7 +119,7 @@ jobs:
     
     needs:
       - relevant_environments
-      - deploy_staging
+      - build
 
     environment:
       name: production
