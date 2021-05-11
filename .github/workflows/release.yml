@@ -32,6 +32,7 @@ jobs:
       - id: calc
         run: |
           for changed_file in ${{ steps.changed_files.outputs.added_modified }}; do
+            echo "Changed/added files: ${{ steps.changed_files.outputs.added_modified }}"
             if [[ $changed_file == "production/*" ]]; then
               echo "::set-output name=production::true"
             fi
