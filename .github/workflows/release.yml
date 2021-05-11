@@ -62,7 +62,7 @@ jobs:
   deploy_testing:
     name: "Deploy to Testing"
 
-    if: ${{ contains(needs.relevant_environments.outputs, "sandbox") }}
+    if: "${{ contains(needs.relevant_environments.outputs, 'sandbox') }}"
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -86,7 +86,7 @@ jobs:
   deploy_staging:
     name: "Deploy to Staging"
 
-    if: ${{ contains(needs.relevant_environments.outputs, "staging") }}
+    if: "${{ contains(needs.relevant_environments.outputs, 'staging') }}"
 
     runs-on: ubuntu-latest
     
@@ -109,7 +109,7 @@ jobs:
   deploy_production:
     name: "Deploy to Production"
 
-    if: ${{ contains(needs.relevant_environments.outputs, "production") }}
+    if: "${{ contains(needs.relevant_environments.outputs, 'production') }}"
 
     runs-on: ubuntu-latest
     
