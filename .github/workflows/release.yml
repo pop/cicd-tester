@@ -29,34 +29,48 @@ jobs:
       - name: Build the thing
         run: echo "Building the thing"
 
-  deploy_staging:
+  deploy_testing:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    
+    needs:
+      - build
+    
+    environment:
+      name: testing
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy to testing
+        run: echo "Deploy the thing to Staging"
+
+  deploy_staging:
+    runs-on: ubuntu-latest
+    
+    needs:
+      - deploy_testing
     
     environment:
       name: staging
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Build the thing
-        run: echo "Building the thing"
+      - name: Deploy to Staging
+        run: echo "Deploy the thing to Staging"
   
   deploy_production:
-      # The type of runner that the job will run on
     runs-on: ubuntu-latest
     
+    needs:
+      - deploy_staging
+
     environment:
       name: production
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
       - name: Deploy to Production
         run: echo "Deploying the thing to Production"
