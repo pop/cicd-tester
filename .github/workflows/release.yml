@@ -48,6 +48,7 @@ jobs:
       - run: echo "${{ needs.relevant_environments.outputs.changed }}"
       - run: echo "${{ needs.relevant_environments.outputs.changed.* }}"
       - run: echo "${{ fromJSON(needs.relevant_environments.outputs.changed) }}"
+      - run: echo "${{ fromJSON(needs.relevant_environments.outputs.changed).* }}"
 
   # This workflow contains a single job called "build"
   build:
