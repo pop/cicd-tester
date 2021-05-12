@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      changed: ${{ steps.calc.outputs.changed }}
+      changed: ${{ fromJSON(steps.calc.outputs.changed) }}
 
     steps:
       - uses: actions/checkout@v2
@@ -30,7 +30,14 @@ jobs:
       - id: calc
         shell: bash
         run: |
-          echo "::set-output name=changed::`echo [$(echo ${{ steps.changed_files.outputs.added_modified }} | xargs -n1 -I{} echo {}, | cut -d '/' -f 1 | uniq)]`"
+          # This line takes all changed files, strips them down to their top-level folder, and uniqifies that list
+          folders=$(echo ${{ steps.changed_files.outputs.added_modified }} | xargs -n1 echo | cut -d '/' -f 1 | uniq)
+
+          # This converts a space-separated list into a JSON list
+          changed=$(echo $folders | jq -R 'split(" ")' -rj | tr -d '\n' | tr -d ' ')
+
+          # Set the output to a JSON formatted string
+          echo "::set-output name=changed::$changed"
 
   debug_relevant_environments:
     name: "Debug relevant environments"
