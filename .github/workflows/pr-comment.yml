@@ -3,21 +3,68 @@ name: Pull Request Deploy
 on:
   pull_request:
     types:
-      - closed
+      - closed    # PR closed: Cleanup
   issue_comment:
     types:
       - created   # Comment added to PR: Deploy PR
       - edited    # Commented was edited (fixing typo)
 
+env:
+  NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
+  COMMENTS_URL: ${{ github.event.issue.comments_url || github.event.pull_request.comments_url }}
+
 jobs:
-  pr-deploy:
-    name: Pull Request Nomad Deploy
+  comment-trigger:
+    name: Triggered by Comment
 
     runs-on: ubuntu-latest
 
-    # if: >-
-    #   github.event_name == 'issue_comment' && github.event.issue.state == 'open' && contains(github.event.comment.body, 'do the thing')
+    if: >-
+      github.event_name == 'issue_comment' && github.event.issue.pull_request && github.event.issue.state == 'open' && contains(github.event.comment.body, '!deploy')
+
+    env:
+      FOO: 'foo/pr-${{ env.NUMBER }}.bar'
 
     steps:
+      # Checkout the PR branch which is not automatic in PR comment events
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          refs/pull/${{ env.NUMBER }}/head
+      
       - run: |
-          echo '${{ toJSON(github) }}'
+          COMMIT_SHA=$(git rev-parse HEAD)
+          echo "COMMIT_SHA=$COMMIT_SHA" >> $GITHUB_ENV
+          echo "RELEASE=PR-${{ env.NUMBER }}-$COMMIT_SHA" >> $GITHUB_ENV
+
+      - run: |
+          echo Release:      ${{ env.RELEASE }}
+          echo Number:       ${{ env.NUMBER }}
+          echo Commit:       ${{ env.COMMIT_SHA }}
+          echo Foo:          ${{ env.FOO }}
+          echo Comments URL: ${{ env.COMMENTS_URL}}
+          echo Repository:   ${{ github.repository }}
+          echo Run ID:       ${{ github.run_id }}
+
+  close-triggered:
+    name: Triggered by close
+
+    runs-on: [self-hosted, lob-runner, Linux]
+
+    if: >-
+      github.event_name == 'pull_request' && github.event.action == 'closed' && contains(github.event.pull_request.labels.*.name, 'Deployed for Testing')
+
+    env:
+      COMMIT_SHA: ${{ github.sha }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - run: |
+          echo Release:      ${{ env.RELEASE }}
+          echo Number:       ${{ env.NUMBER }}
+          echo Commit:       ${{ env.COMMIT_SHA }}
+          echo Comments URL: ${{ env.COMMENTS_URL}}
+          echo Repository:   ${{ github.repository }}
+          echo Run ID:       ${{ github.run_id }}
