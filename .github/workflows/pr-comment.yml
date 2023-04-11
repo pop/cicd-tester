@@ -50,7 +50,7 @@ jobs:
     runs-on: [self-hosted, lob-runner, Linux]
 
     if: >-
-      github.event_name == 'pull_request' && github.event.action == 'closed' && contains(github.event.pull_request.labels.*.name, 'Deployed for Testing')
+      github.event_name == 'pull_request' && github.event.action == 'closed'
 
     env:
       COMMIT_SHA: ${{ github.sha }}
