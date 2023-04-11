@@ -27,7 +27,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          refs/pull/${{ env.NUMBER }}/head
+          ref: refs/pull/${{ env.NUMBER }}/head
       
       - run: |
           COMMIT_SHA=$(git rev-parse HEAD)
